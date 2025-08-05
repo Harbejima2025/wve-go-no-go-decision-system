@@ -1,209 +1,139 @@
-document.getElementById('goNoGoForm').addEventListener('submit', function (e) {
-  e.preventDefault();
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('goNoGoForm');
 
-  const form = e.target;
-  const data = {};
-  const elements = form.elements;
+  // Update summary panel on select change
+  form.querySelectorAll('select').forEach(select => {
+    select.addEventListener('change', updateSummaryPanel);
+  });
 
-  // Check opportunity type selection
-  const opportunityType = document.querySelector('input[name="opportunityType"]:checked');
-  if (!opportunityType) {
-    alert('Please select the Opportunity Type (Grant or Contract).');
-    return;
-  }
-  data['Opportunity Type'] = opportunityType.value;
+  updateSummaryPanel(); // initial call
 
-  // Collect form data & validate
-  const selectValues = [];
-  for (let i = 0; i < elements.length; i++) {
-    const el = elements[i];
-    if (el.name && !el.disabled) {
-      if (el.type === 'radio') {
-        if (el.checked) {
-          data[el.name] = el.value;
-        }
-      } else if (el.tagName.toLowerCase() === 'select' || el.tagName.toLowerCase() === 'textarea' || el.type === 'text') {
-        data[el.name] = el.value.trim();
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Simple validation: required selects must have value
+    const requiredSelects = form.querySelectorAll('select[required]');
+    for (const sel of requiredSelects) {
+      if (!sel.value) {
+        alert(`Please select a rating for: ${sel.previousElementSibling.textContent}`);
+        sel.focus();
+        return;
       }
     }
+
+    // Collect form data
+    const data = {};
+    for (const element of form.elements) {
+      if (element.name) {
+        data[element.name] = element.value;
+      }
+    }
+
+    // Confirm submission summary
+    const summary = buildSummaryText(data);
+    if (!confirm(`Please confirm your submission:\n\n${summary}`)) {
+      return;
+    }
+
+    // Download JSON locally
+    downloadJSON(data, 'GoNoGo_Submission.json');
+
+    // Send to backend API
+    await saveToServer(data);
+  });
+
+  function buildSummaryText(data) {
+    let text = '';
+    for (const [key, val] of Object.entries(data)) {
+      if (key.endsWith('_comments') && val.trim() !== '') {
+        const baseKey = key.replace('_comments', '');
+        text += `${baseKey} comments: ${val}\n`;
+      } else if (!key.endsWith('_comments')) {
+        text += `${key}: ${val}\n`;
+      }
+    }
+    return text;
   }
 
-  // Validation for required select fields
-  const requiredSelects = form.querySelectorAll('select[required]');
-  for (const field of requiredSelects) {
-    if (!data[field.name] || data[field.name] === '') {
-      alert(`Please select a value for: ${field.previousElementSibling.textContent || field.name}`);
-      field.focus();
-      return;
+  function downloadJSON(data, filename) {
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function saveToServer(data) {
+    try {
+      const response = await fetch('https://your-server-url/api/save-to-github', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const resJson = await response.json();
+      if (response.ok) {
+        alert('Data saved successfully to GitHub!');
+      } else {
+        alert('Failed to save data to server: ' + resJson.message);
+      }
+    } catch (err) {
+      alert('Error connecting to server: ' + err.message);
     }
   }
 
-  // Validation: For any select with "Must address" or "Success not possible", explanation textarea must be filled
-  const criticalValues = ['Must address', 'Success not possible'];
-  for (let i = 0; i < elements.length; i++) {
-    const el = elements[i];
-    if (el.tagName.toLowerCase() === 'select') {
-      const val = el.value;
-      if (criticalValues.includes(val)) {
-        // Find corresponding explanation textarea
-        const commentId = el.id + '_comment';
-        const commentEl = document.getElementById(commentId);
-        if (commentEl) {
-          if (!commentEl.value.trim()) {
-            alert(`Please provide explanation for: ${el.previousElementSibling.textContent || el.name} because it is marked as "${val}".`);
-            commentEl.focus();
-            return;
+  function updateSummaryPanel() {
+    const elements = form.elements;
+    const categoriesCount = {
+      'Strength': 0,
+      'Neutral': 0,
+      'Weakness': 0,
+      'Must address': 0,
+      'Success not possible': 0,
+      "Don't know": 0,
+    };
+    let totalRated = 0;
+
+    for (let i = 0; i < elements.length; i++) {
+      const el = elements[i];
+      if (el.tagName.toLowerCase() === 'select' && el.name) {
+        const val = el.value;
+        if (categoriesCount.hasOwnProperty(val)) {
+          categoriesCount[val]++;
+          if (val !== "Don't know" && val !== "") {
+            totalRated++;
           }
         }
       }
     }
-  }
 
-  // Aggregation: count how many answers fall into each category
-  const categoriesCount = {
-    'Strength': 0,
-    'Neutral': 0,
-    'Weakness': 0,
-    'Must address': 0,
-    'Success not possible': 0,
-    "Don't know": 0,
-  };
+    const summaryDiv = document.getElementById('summaryCounts');
+    summaryDiv.innerHTML = '';
 
-  // Only count the select fields inside the form (skip opportunityType radios)
-  for (let i = 0; i < elements.length; i++) {
-    const el = elements[i];
-    if (el.tagName.toLowerCase() === 'select' && el.name) {
-      const val = el.value;
-      if (categoriesCount.hasOwnProperty(val)) {
-        categoriesCount[val]++;
-      }
+    const colors = {
+      'Strength': 'green',
+      'Neutral': 'goldenrod',
+      'Weakness': 'orange',
+      'Must address': 'red',
+      'Success not possible': 'darkred',
+      "Don't know": 'gray',
+    };
+
+    for (const [cat, count] of Object.entries(categoriesCount)) {
+      const span = document.createElement('span');
+      span.textContent = `${cat}: ${count}  `;
+      span.style.color = colors[cat];
+      span.style.fontWeight = (cat === 'Must address' || cat === 'Success not possible') ? 'bold' : 'normal';
+      summaryDiv.appendChild(span);
     }
-  }
 
-  // Build the summary string
-  let summary = '--- Risk and Opportunity Summary ---\n';
-  for (const [cat, count] of Object.entries(categoriesCount)) {
-    summary += `${cat}: ${count}\n`;
-  }
-  summary += '\n';
-
-  // Format the full output
-  let output = 'Go/No-Go Decision Form Responses\n\n';
-  output += `Opportunity Type: ${data['Opportunity Type']}\n\n`;
-  output += summary;
-
-  // Add detailed responses
-  for (const key in data) {
-    if (data.hasOwnProperty(key) && key !== 'Opportunity Type') {
-      output += `${key}: ${data[key]}\n`;
-    }
-  }
-
-  // Show summary to user in a confirm dialog
-  const proceed = confirm(summary + '\nDo you want to download your responses?');
-  if (!proceed) {
-    return;
-  }
-
-  // Trigger file download
-  const blob = new Blob([output], { type: 'text/plain' });
-  const filename = `GoNoGo_Responses_${new Date().toISOString().slice(0, 10)}.txt`;
-
-  if (window.navigator.msSaveOrOpenBlob) {
-    window.navigator.msSaveOrOpenBlob(blob, filename);
-  } else {
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(() => {
-      document.body.removeChild(a);
-      URL.revokeObjectURL(a.href);
-    }, 0);
-  }
-});
-function updateSummaryPanel() {
-  const form = document.getElementById('goNoGoForm');
-  const elements = form.elements;
-  const categoriesCount = {
-    'Strength': 0,
-    'Neutral': 0,
-    'Weakness': 0,
-    'Must address': 0,
-    'Success not possible': 0,
-    "Don't know": 0,
-  };
-  let totalRated = 0;
-
-  for (let i = 0; i < elements.length; i++) {
-    const el = elements[i];
-    if (el.tagName.toLowerCase() === 'select' && el.name) {
-      const val = el.value;
-      if (categoriesCount.hasOwnProperty(val)) {
-        categoriesCount[val]++;
-        if (val !== "Don't know" && val !== "") {
-          totalRated++;
-        }
-      }
-    }
-  }
-
-  const summaryDiv = document.getElementById('summaryCounts');
-  summaryDiv.innerHTML = '';
-
-  // Colors for each category
-  const colors = {
-    'Strength': 'green',
-    'Neutral': 'goldenrod',
-    'Weakness': 'orange',
-    'Must address': 'red',
-    'Success not possible': 'darkred',
-    "Don't know": 'gray',
-  };
-
-  for (const [cat, count] of Object.entries(categoriesCount)) {
-    const span = document.createElement('span');
-    span.textContent = `${cat}: ${count}  `;
-    span.style.color = colors[cat];
-    span.style.fontWeight = (cat === 'Must address' || cat === 'Success not possible') ? 'bold' : 'normal';
-    summaryDiv.appendChild(span);
-  }
-
-  // Update progress bar
-  const progressBar = document.getElementById('strengthProgress');
-  if (totalRated > 0) {
-    const percentStrength = (categoriesCount['Strength'] / totalRated) * 100;
-    progressBar.value = percentStrength.toFixed(2);
-  } else {
-    progressBar.value = 0;
-  }
-}
-
-// Run updateSummaryPanel on any select change
-document.querySelectorAll('select').forEach(select => {
-  select.addEventListener('change', updateSummaryPanel);
-});
-
-// Initial call
-updateSummaryPanel();
-
-async function saveToServer(data) {
-  try {
-    const response = await fetch('https://your-server-url/api/save-to-github', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-    const resJson = await response.json();
-    if (response.ok) {
-      alert('Data saved successfully to GitHub!');
+    const progressBar = document.getElementById('strengthProgress');
+    if (totalRated > 0) {
+      const percentStrength = (categoriesCount['Strength'] / totalRated) * 100;
+      progressBar.value = percentStrength.toFixed(2);
     } else {
-      alert('Failed to save data to server: ' + resJson.message);
+      progressBar.value = 0;
     }
-  } catch (err) {
-    alert('Error connecting to server: ' + err.message);
   }
-}
+});
