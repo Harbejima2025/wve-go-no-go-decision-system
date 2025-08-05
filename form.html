@@ -2,65 +2,122 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Go/No-Go Decision Response Form</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Go/No-Go Decision Form</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="form-handler.js"></script>
 </head>
 <body>
-  <h1>Go/No-Go Decision System</h1>
-  <p>Please fill in the form below. Your answers will be saved as a structured file. No changes can be made after submission.</p>
+  <div class="container">
+    <h1>Go/No-Go Decision Form</h1>
+    <form id="goNoGoForm">
+      <div class="section">
+        <h2>General Information</h2>
+        <label for="name">Your Full Name</label>
+        <input type="text" id="name" name="name" required />
 
-  <form id="goNoGoForm">
-    <fieldset>
-      <legend>🧑 Personal Information</legend>
+        <label for="position">Your Position</label>
+        <input type="text" id="position" name="position" required />
 
-      <label for="name">Full Name:</label><br />
-      <input type="text" id="name" name="name" required /><br /><br />
+        <label for="office">Office</label>
+        <input type="text" id="office" name="office" required />
+      </div>
 
-      <label for="position">Position/Title:</label><br />
-      <input type="text" id="position" name="position" required /><br /><br />
+      <!-- Sections 1-7 (Donor to Implementation Risk) -->
+      <div class="section">
+        <h2>1. Donor</h2>
+        <label>1.1.1 Is the FO well positioned with the donor in-country?</label>
+        <select name="q1_1_1" required>
+          <option value="">-- Select --</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label>Rationale</label>
+        <textarea name="q1_1_1_rationale" rows="3"></textarea>
 
-      <label for="office">Office/Department:</label><br />
-      <input type="text" id="office" name="office" required /><br /><br />
+        <label>1.1.2 Has the FO had a LRF/Locally led grant from this donor before?</label>
+        <select name="q1_1_2" required>
+          <option value="">-- Select --</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label>Rationale</label>
+        <textarea name="q1_1_2_rationale" rows="3"></textarea>
 
-      <label for="date">Date of Submission:</label><br />
-      <input type="date" id="date" name="date" required /><br /><br />
-    </fieldset>
+        <label>1.2.1 Is FO team familiar with donor's GESI strategy?</label>
+        <select name="q1_2_1" required>
+          <option value="">-- Select --</option>
+          <option value="Yes">Yes</option>
+          <option value="No">No</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label>Rationale</label>
+        <textarea name="q1_2_1_rationale" rows="3"></textarea>
+      </div>
 
-    <fieldset>
-      <legend>📋 Section 1: Donor Relationship</legend>
+      <div class="section">
+        <h2>2. Partners</h2>
+        <label>2.1.1 Does the FO have competitive implementing partners?</label>
+        <textarea name="q2_1_1" rows="3" required></textarea>
+        <label>2.1.2 Does the FO have teaming agreements in place?</label>
+        <textarea name="q2_1_2" rows="3" required></textarea>
+        <label>2.2.1 Who are the main competitors?</label>
+        <textarea name="q2_2_1" rows="3" required></textarea>
+        <label>2.3.1 Risks associated with partnerships?</label>
+        <textarea name="q2_3_1" rows="3" required></textarea>
+      </div>
 
-      <label>1.1.1 Is the FO well positioned with the donor in-country (e.g., recent visits)?</label><br />
-      <select name="q1_1_1" required>
-        <option value="">--Select--</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-        <option value="Don't know">Don't know</option>
-      </select><br />
-      <textarea name="q1_1_1_rationale" placeholder="Explain your answer..." required></textarea><br /><br />
+      <div class="section">
+        <h2>3. Alignment</h2>
+        <label>3.1.1 Does the opportunity align with our strategy?</label>
+        <textarea name="q3_1_1" rows="3" required></textarea>
+        <label>3.1.2 Does the opportunity align with OIOS?</label>
+        <textarea name="q3_1_2" rows="3" required></textarea>
+      </div>
 
-      <label>1.1.2 Has the FO had a LRF/Locally led grant from this donor before?</label><br />
-      <select name="q1_1_2" required>
-        <option value="">--Select--</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-        <option value="Don't know">Don't know</option>
-      </select><br />
-      <textarea name="q1_1_2_rationale" placeholder="Explain your answer..." required></textarea><br /><br />
+      <div class="section">
+        <h2>4. Proposal Writing</h2>
+        <label>4.1.1 Are there adequate time and funds?</label>
+        <textarea name="q4_1_1" rows="3" required></textarea>
+        <label>4.2.1 Who is the proposal team?</label>
+        <textarea name="q4_2_1" rows="3" required></textarea>
+        <label>4.3.1 Do we have strong project models?</label>
+        <textarea name="q4_3_1" rows="3" required></textarea>
+      </div>
 
-      <label>1.2.1 Is FO team familiar with donor's GESI policy or requirements?</label><br />
-      <select name="q1_2_1" required>
-        <option value="">--Select--</option>
-        <option value="Yes">Yes</option>
-        <option value="No">No</option>
-        <option value="Don't know">Don't know</option>
-      </select><br />
-      <textarea name="q1_2_1_rationale" placeholder="Explain your answer..." required></textarea><br /><br />
-    </fieldset>
+      <div class="section">
+        <h2>5. Implementation Capability</h2>
+        <label>5.1.1 Organizational readiness</label>
+        <textarea name="q5_1_1" rows="3" required></textarea>
+        <label>5.2.1 People readiness</label>
+        <textarea name="q5_2_1" rows="3" required></textarea>
+        <label>5.3.1 Procurement capability</label>
+        <textarea name="q5_3_1" rows="3" required></textarea>
+      </div>
 
-    <button type="submit">Submit Response</button>
-  </form>
+      <div class="section">
+        <h2>6. Financial</h2>
+        <label>6.1.1 Cost allocation approach</label>
+        <textarea name="q6_1_1" rows="3" required></textarea>
+        <label>6.2.1 Donor match available?</label>
+        <textarea name="q6_2_1" rows="3" required></textarea>
+        <label>6.4.1 Cash flow concerns</label>
+        <textarea name="q6_4_1" rows="3" required></textarea>
+      </div>
 
-  <script src="script.js"></script>
+      <div class="section">
+        <h2>7. Implementation Risk</h2>
+        <label>7.1.1 Safety & security risks</label>
+        <textarea name="q7_1_1" rows="3" required></textarea>
+        <label>7.2.1 Political risks</label>
+        <textarea name="q7_2_1" rows="3" required></textarea>
+        <label>7.3.1 Can we measure impact?</label>
+        <textarea name="q7_3_1" rows="3" required></textarea>
+      </div>
+
+      <button type="submit">Save & Download Response</button>
+    </form>
+  </div>
 </body>
 </html>
-
