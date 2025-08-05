@@ -188,3 +188,22 @@ document.querySelectorAll('select').forEach(select => {
 // Initial call
 updateSummaryPanel();
 
+async function saveToServer(data) {
+  try {
+    const response = await fetch('https://your-server-url/api/save-to-github', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+    const resJson = await response.json();
+    if (response.ok) {
+      alert('Data saved successfully to GitHub!');
+    } else {
+      alert('Failed to save data to server: ' + resJson.message);
+    }
+  } catch (err) {
+    alert('Error connecting to server: ' + err.message);
+  }
+}
