@@ -1,5 +1,3 @@
-// server.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const axios = require('axios');
@@ -8,29 +6,35 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
 app.use(bodyParser.json());
 
-// POST endpoint to save submission
+// Allow CORS for your frontend origin
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*'); // For production, restrict this!
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
+
 app.post('/api/save-to-github', async (req, res) => {
   try {
-    const data = req.body; // expects JSON object with form responses
+    const data = req.body;
 
     const githubToken = process.env.GITHUB_TOKEN;
     const repoOwner = 'your-github-username-or-org';
     const repoName = 'your-repo-name';
     const branch = 'main';
-    const path = `submissions/GoNoGo_${new Date().toISOString().slice(0,10)}_${Date.now()}.json`;
 
-    // Get the SHA of the latest commit for the file creation
-    const getRefUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/refs/heads/${branch}`;
-    const refResponse = await axios.get(getRefUrl, {
+    const filePath = `submissions/GoNoGo_${new Date().toISOString().slice(0,10)}_${Date.now()}.json`;
+
+    // Get latest commit sha of branch
+    const refUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/refs/heads/${branch}`;
+    const refResponse = await axios.get(refUrl, {
       headers: { Authorization: `token ${githubToken}` }
     });
 
     const commitSha = refResponse.data.object.sha;
 
-    // Get the tree SHA for the latest commit
+    // Get tree sha from commit
     const commitUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/commits/${commitSha}`;
     const commitResponse = await axios.get(commitUrl, {
       headers: { Authorization: `token ${githubToken}` }
@@ -38,11 +42,9 @@ app.post('/api/save-to-github', async (req, res) => {
 
     const treeSha = commitResponse.data.tree.sha;
 
-    // Prepare content base64
-    const contentBase64 = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
-
     // Create blob
     const blobUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/blobs`;
+    const contentBase64 = Buffer.from(JSON.stringify(data, null, 2)).toString('base64');
     const blobResponse = await axios.post(blobUrl, {
       content: contentBase64,
       encoding: 'base64'
@@ -52,12 +54,12 @@ app.post('/api/save-to-github', async (req, res) => {
 
     const blobSha = blobResponse.data.sha;
 
-    // Create new tree with this file
+    // Create new tree with new blob
     const newTreeUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/trees`;
     const newTreeResponse = await axios.post(newTreeUrl, {
       base_tree: treeSha,
       tree: [{
-        path: path,
+        path: filePath,
         mode: '100644',
         type: 'blob',
         sha: blobSha
@@ -68,10 +70,10 @@ app.post('/api/save-to-github', async (req, res) => {
 
     const newTreeSha = newTreeResponse.data.sha;
 
-    // Create a new commit
+    // Create new commit
     const newCommitUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/commits`;
     const newCommitResponse = await axios.post(newCommitUrl, {
-      message: `Add GoNoGo submission ${path}`,
+      message: `Add GoNoGo submission ${filePath}`,
       tree: newTreeSha,
       parents: [commitSha]
     }, {
@@ -80,7 +82,7 @@ app.post('/api/save-to-github', async (req, res) => {
 
     const newCommitSha = newCommitResponse.data.sha;
 
-    // Update the ref to point to the new commit
+    // Update ref to point to new commit
     const updateRefUrl = `https://api.github.com/repos/${repoOwner}/${repoName}/git/refs/heads/${branch}`;
     await axios.patch(updateRefUrl, {
       sha: newCommitSha
@@ -89,7 +91,6 @@ app.post('/api/save-to-github', async (req, res) => {
     });
 
     res.json({ status: 'success', message: 'Submission saved to GitHub' });
-
   } catch (error) {
     console.error('Error saving to GitHub:', error.response?.data || error.message);
     res.status(500).json({ status: 'error', message: 'Failed to save submission' });
