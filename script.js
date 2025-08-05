@@ -1,41 +1,26 @@
-document.getElementById('goNoGoForm').addEventListener('submit', function (e) {
-  e.preventDefault(); // Stop normal form submission
+// form-handler.js
 
-  const form = e.target;
-  const formData = new FormData(form);
-  const data = {};
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("goNoGoForm");
 
-  // Build the data object from form fields
-  formData.forEach((value, key) => {
-    data[key] = value.trim();
+  form.addEventListener("submit", function (e) {
+    e.preventDefault();
+
+    const formData = new FormData(form);
+    let output = "Go/No-Go Decision Form Response\n\n";
+
+    for (let [name, value] of formData.entries()) {
+      output += `${name.replace(/_/g, ".")}: ${value}\n`;
+    }
+
+    const blob = new Blob([output], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `go_no_go_response_${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   });
-
-  // Add a timestamp
-  data.submitted_at = new Date().toISOString();
-
-  // Generate a unique filename using name + timestamp
-  const namePart = data.name.replace(/\s+/g, '_').toLowerCase();
-  const timestampPart = new Date().toISOString().replace(/[:.]/g, '-');
-  const filename = `responses/${namePart}_${timestampPart}.json`;
-
-  // Convert to JSON string
-  const json = JSON.stringify(data, null, 2);
-
-  // Trigger download of JSON file
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-
-  a.href = url;
-  a.download = filename;
-  a.click();
-
-  URL.revokeObjectURL(url);
-
-  // Notify user
-  alert('✅ Your response has been saved as a JSON file.\nPlease send it to the consolidation team or upload to the GitHub folder.');
-
-  // Optional: Reset form
-  form.reset();
 });
-
