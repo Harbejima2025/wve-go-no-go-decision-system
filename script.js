@@ -123,3 +123,68 @@ document.getElementById('goNoGoForm').addEventListener('submit', function (e) {
     }, 0);
   }
 });
+function updateSummaryPanel() {
+  const form = document.getElementById('goNoGoForm');
+  const elements = form.elements;
+  const categoriesCount = {
+    'Strength': 0,
+    'Neutral': 0,
+    'Weakness': 0,
+    'Must address': 0,
+    'Success not possible': 0,
+    "Don't know": 0,
+  };
+  let totalRated = 0;
+
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    if (el.tagName.toLowerCase() === 'select' && el.name) {
+      const val = el.value;
+      if (categoriesCount.hasOwnProperty(val)) {
+        categoriesCount[val]++;
+        if (val !== "Don't know" && val !== "") {
+          totalRated++;
+        }
+      }
+    }
+  }
+
+  const summaryDiv = document.getElementById('summaryCounts');
+  summaryDiv.innerHTML = '';
+
+  // Colors for each category
+  const colors = {
+    'Strength': 'green',
+    'Neutral': 'goldenrod',
+    'Weakness': 'orange',
+    'Must address': 'red',
+    'Success not possible': 'darkred',
+    "Don't know": 'gray',
+  };
+
+  for (const [cat, count] of Object.entries(categoriesCount)) {
+    const span = document.createElement('span');
+    span.textContent = `${cat}: ${count}  `;
+    span.style.color = colors[cat];
+    span.style.fontWeight = (cat === 'Must address' || cat === 'Success not possible') ? 'bold' : 'normal';
+    summaryDiv.appendChild(span);
+  }
+
+  // Update progress bar
+  const progressBar = document.getElementById('strengthProgress');
+  if (totalRated > 0) {
+    const percentStrength = (categoriesCount['Strength'] / totalRated) * 100;
+    progressBar.value = percentStrength.toFixed(2);
+  } else {
+    progressBar.value = 0;
+  }
+}
+
+// Run updateSummaryPanel on any select change
+document.querySelectorAll('select').forEach(select => {
+  select.addEventListener('change', updateSummaryPanel);
+});
+
+// Initial call
+updateSummaryPanel();
+
