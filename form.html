@@ -427,6 +427,7 @@
     const contractFinancialDiv = document.getElementById('contractFinancialMethods');
     const contractTextElements = document.querySelectorAll('.contract-text');
     const grantTextElements = document.querySelectorAll('.grant-text');
+    await saveToServer(data);
 
     function toggleOpportunitySections() {
       const selected = document.querySelector('input[name="opportunityType"]:checked').value;
