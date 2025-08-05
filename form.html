@@ -2,122 +2,451 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Go/No-Go Decision Form</title>
-  <link rel="stylesheet" href="styles.css">
-  <script defer src="form-handler.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Go/No-Go Decision Form - Grant & Contract</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
   <div class="container">
     <h1>Go/No-Go Decision Form</h1>
+
+    <!-- Opportunity Type Selector -->
+    <fieldset class="section">
+      <legend>Opportunity Type</legend>
+      <label>
+        <input type="radio" name="opportunityType" value="Grant" checked /> Grant
+      </label>
+      <label>
+        <input type="radio" name="opportunityType" value="Contract" /> Contract
+      </label>
+    </fieldset>
+
     <form id="goNoGoForm">
-      <div class="section">
-        <h2>General Information</h2>
-        <label for="name">Your Full Name</label>
-        <input type="text" id="name" name="name" required />
 
-        <label for="position">Your Position</label>
-        <input type="text" id="position" name="position" required />
-
-        <label for="office">Office</label>
-        <input type="text" id="office" name="office" required />
-      </div>
-
-      <!-- Sections 1-7 (Donor to Implementation Risk) -->
+      <!-- 1. Donor -->
       <div class="section">
         <h2>1. Donor</h2>
-        <label>1.1.1 Is the FO well positioned with the donor in-country?</label>
-        <select name="q1_1_1" required>
-          <option value="">-- Select --</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
-          <option value="Don't know">Don't know</option>
-        </select>
-        <label>Rationale</label>
-        <textarea name="q1_1_1_rationale" rows="3"></textarea>
 
-        <label>1.1.2 Has the FO had a LRF/Locally led grant from this donor before?</label>
-        <select name="q1_1_2" required>
-          <option value="">-- Select --</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
+        <label for="d_1_1_1">1.1.1 Is the FO well positioned with the donor in-country? *</label>
+        <select id="d_1_1_1" name="Donor_1.1.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
           <option value="Don't know">Don't know</option>
         </select>
-        <label>Rationale</label>
-        <textarea name="q1_1_2_rationale" rows="3"></textarea>
+        <label for="d_1_1_1_comment">Explanation:</label>
+        <textarea id="d_1_1_1_comment" name="Donor_1.1.1_comment" rows="3"></textarea>
 
-        <label>1.2.1 Is FO team familiar with donor's GESI strategy?</label>
-        <select name="q1_2_1" required>
-          <option value="">-- Select --</option>
-          <option value="Yes">Yes</option>
-          <option value="No">No</option>
+        <label for="d_1_1_2">1.1.2
+          <span class="grant-text">Has the FO had a LRF/Locally led grant from this donor before?</span>
+          <span class="contract-text" style="display:none;">Is the FO familiar with the bidding process of the client or has previous experience with the client?</span> *
+        </label>
+        <select id="d_1_1_2" name="Donor_1.1.2" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
           <option value="Don't know">Don't know</option>
         </select>
-        <label>Rationale</label>
-        <textarea name="q1_2_1_rationale" rows="3"></textarea>
+        <label for="d_1_1_2_comment">Explanation:</label>
+        <textarea id="d_1_1_2_comment" name="Donor_1.1.2_comment" rows="3"></textarea>
+
+        <label for="d_1_2_1">1.2.1 Is FO team familiar with donor's GESI strategy/policy? *</label>
+        <select id="d_1_2_1" name="Donor_1.2.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="d_1_2_1_comment">Explanation:</label>
+        <textarea id="d_1_2_1_comment" name="Donor_1.2.1_comment" rows="3"></textarea>
       </div>
 
+      <!-- 2. Partners -->
       <div class="section">
         <h2>2. Partners</h2>
-        <label>2.1.1 Does the FO have competitive implementing partners?</label>
-        <textarea name="q2_1_1" rows="3" required></textarea>
-        <label>2.1.2 Does the FO have teaming agreements in place?</label>
-        <textarea name="q2_1_2" rows="3" required></textarea>
-        <label>2.2.1 Who are the main competitors?</label>
-        <textarea name="q2_2_1" rows="3" required></textarea>
-        <label>2.3.1 Risks associated with partnerships?</label>
-        <textarea name="q2_3_1" rows="3" required></textarea>
+
+        <label for="p_2_1_1">2.1.1 Does the FO have or can quickly establish competitive implementing partners? *</label>
+        <select id="p_2_1_1" name="Partners_2.1.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="p_2_1_1_comment">Please specify partner names and notes:</label>
+        <textarea id="p_2_1_1_comment" name="Partners_2.1.1_comment" rows="3"></textarea>
+
+        <label for="p_2_1_2">2.1.2 Does the FO have partnering/consortia agreements in place and have partners passed due diligence? *</label>
+        <select id="p_2_1_2" name="Partners_2.1.2" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="p_2_1_2_comment">Explanation:</label>
+        <textarea id="p_2_1_2_comment" name="Partners_2.1.2_comment" rows="3"></textarea>
+
+        <!-- Contract-only field -->
+        <div class="contract-text" style="display:none;">
+          <label for="p_2_1_3">2.1.3 Which WV entities and partners are named as jointly and severally liable consortium submitting the bid? *</label>
+          <textarea id="p_2_1_3" name="Partners_2.1.3" rows="3"></textarea>
+        </div>
+
+        <label for="p_2_2_1">2.2.1 Are there strong competitors? Who? How do we rate compared to competition? *</label>
+        <select id="p_2_2_1" name="Partners_2.2.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="p_2_2_1_comment">Explanation:</label>
+        <textarea id="p_2_2_1_comment" name="Partners_2.2.1_comment" rows="3"></textarea>
+
+        <label for="p_2_3_1">2.3.1 How are risks from partnering with other stakeholders assessed? *</label>
+        <select id="p_2_3_1" name="Partners_2.3.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="p_2_3_1_comment">Explanation:</label>
+        <textarea id="p_2_3_1_comment" name="Partners_2.3.1_comment" rows="3"></textarea>
+
+        <label for="p_2_3_2">2.3.2 Are partners identified per donor eligibility criteria? List names and indicate local/international. *</label>
+        <select id="p_2_3_2" name="Partners_2.3.2" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="p_2_3_2_comment">Explanation:</label>
+        <textarea id="p_2_3_2_comment" name="Partners_2.3.2_comment" rows="3"></textarea>
+
+        <label for="p_2_4_1">2.4.1 If pursuing alone, specify reason and risk mitigation plan. Which SO are you partnering with? *</label>
+        <select id="p_2_4_1" name="Partners_2.4.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="p_2_4_1_comment">Explanation:</label>
+        <textarea id="p_2_4_1_comment" name="Partners_2.4_1_comment" rows="3"></textarea>
       </div>
 
+      <!-- 3. Alignment -->
       <div class="section">
         <h2>3. Alignment</h2>
-        <label>3.1.1 Does the opportunity align with our strategy?</label>
-        <textarea name="q3_1_1" rows="3" required></textarea>
-        <label>3.1.2 Does the opportunity align with OIOS?</label>
-        <textarea name="q3_1_2" rows="3" required></textarea>
+
+        <label for="a_3_1_1">3.1.1 Does it fit with FO or SO strategy including priority donors? *</label>
+        <select id="a_3_1_1" name="Alignment_3.1.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="a_3_1_1_comment">Explanation:</label>
+        <textarea id="a_3_1_1_comment" name="Alignment_3.1.1_comment" rows="3"></textarea>
+
+        <label for="a_3_1_2">3.1.2 Does opportunity align with OIOS initiative? *</label>
+        <select id="a_3_1_2" name="Alignment_3.1.2" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="a_3_1_2_comment">Explanation:</label>
+        <textarea id="a_3_1_2_comment" name="Alignment_3.1.2_comment" rows="3"></textarea>
+
+        <!-- Contract-specific -->
+        <div class="contract-text" style="display:none;">
+          <label for="a_3_2_1">3.2.1 Is your office eligible for commercial contracting opportunities? *</label>
+          <select id="a_3_2_1" name="Alignment_3.2.1">
+            <option value="">Select...</option>
+            <option value="Strength">Strength</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Weakness">Weakness</option>
+            <option value="Must address">Must address</option>
+            <option value="Success not possible">Success not possible</option>
+            <option value="Don't know">Don't know</option>
+          </select>
+          <label for="a_3_2_1_comment">Explanation:</label>
+          <textarea id="a_3_2_1_comment" name="Alignment_3.2.1_comment" rows="3"></textarea>
+
+          <label for="a_3_3_1">3.3.1 Has FO received local legal and tax advice for contracts? *</label>
+          <select id="a_3_3_1" name="Alignment_3.3.1">
+            <option value="">Select...</option>
+            <option value="Strength">Strength</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Weakness">Weakness</option>
+            <option value="Must address">Must address</option>
+            <option value="Success not possible">Success not possible</option>
+            <option value="Don't know">Don't know</option>
+          </select>
+          <label for="a_3_3_1_comment">Explanation:</label>
+          <textarea id="a_3_3_1_comment" name="Alignment_3.3.1_comment" rows="3"></textarea>
+
+          <label for="a_3_3_2">3.3.2 Tax implications for FO associated with contract? *</label>
+          <textarea id="a_3_3_2" name="Alignment_3.3.2_comment" rows="3"></textarea>
+
+          <label for="a_3_3_3">3.3.3 Tax implications for SO associated with contract? *</label>
+          <textarea id="a_3_3_3" name="Alignment_3.3.3_comment" rows="3"></textarea>
+        </div>
+
+        <!-- Grants-only -->
+        <div class="grant-text">
+          <label for="a_3_4_1">3.4.1 Is FO permitted to pursue LRF/locally led grants with current registration? *</label>
+          <select id="a_3_4_1" name="Alignment_3.4.1">
+            <option value="">Select...</option>
+            <option value="Strength">Strength</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Weakness">Weakness</option>
+            <option value="Must address">Must address</option>
+            <option value="Success not possible">Success not possible</option>
+            <option value="Don't know">Don't know</option>
+          </select>
+          <label for="a_3_4_1_comment">Explanation:</label>
+          <textarea id="a_3_4_1_comment" name="Alignment_3.4.1_comment" rows="3"></textarea>
+
+          <label for="a_3_5_1">3.5.1 Has FO reviewed the LRF protocol? Is SO informed? *</label>
+          <textarea id="a_3_5_1" name="Alignment_3.5.1_comment" rows="3"></textarea>
+        </div>
       </div>
 
+      <!-- 4. Proposal Writing -->
       <div class="section">
         <h2>4. Proposal Writing</h2>
-        <label>4.1.1 Are there adequate time and funds?</label>
-        <textarea name="q4_1_1" rows="3" required></textarea>
-        <label>4.2.1 Who is the proposal team?</label>
-        <textarea name="q4_2_1" rows="3" required></textarea>
-        <label>4.3.1 Do we have strong project models?</label>
-        <textarea name="q4_3_1" rows="3" required></textarea>
+
+        <label for="pr_4_1_1">4.1.1 Are there adequate time and funds to write a winning proposal? *</label>
+        <select id="pr_4_1_1" name="Proposal_4.1.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="pr_4_1_1_comment">Explanation:</label>
+        <textarea id="pr_4_1_1_comment" name="Proposal_4.1.1_comment" rows="3"></textarea>
+
+        <label for="pr_4_2_1">4.2.1 Do we have a high quality, experienced proposal team? Who will lead? *</label>
+        <select id="pr_4_2_1" name="Proposal_4.2.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="pr_4_2_1_comment">Explanation:</label>
+        <textarea id="pr_4_2_1_comment" name="Proposal_4.2.1_comment" rows="3"></textarea>
+
+        <!-- Contract only -->
+        <div class="contract-text" style="display:none;">
+          <label for="pr_4_2_2">4.2.2 Does office have experience developing commercial contract bids or capable team? *</label>
+          <select id="pr_4_2_2" name="Proposal_4.2.2">
+            <option value="">Select...</option>
+            <option value="Strength">Strength</option>
+            <option value="Neutral">Neutral</option>
+            <option value="Weakness">Weakness</option>
+            <option value="Must address">Must address</option>
+            <option value="Success not possible">Success not possible</option>
+            <option value="Don't know">Don't know</option>
+          </select>
+          <label for="pr_4_2_2_comment">Explanation:</label>
+          <textarea id="pr_4_2_2_comment" name="Proposal_4.2.2_comment" rows="3"></textarea>
+        </div>
+
+        <label for="pr_4_3_1">4.3.1 Has the office reviewed eligibility criteria and donor requirements? *</label>
+        <select id="pr_4_3_1" name="Proposal_4.3.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="pr_4_3_1_comment">Explanation:</label>
+        <textarea id="pr_4_3_1_comment" name="Proposal_4.3.1_comment" rows="3"></textarea>
       </div>
 
+      <!-- 5. Implementation Capability -->
       <div class="section">
         <h2>5. Implementation Capability</h2>
-        <label>5.1.1 Organizational readiness</label>
-        <textarea name="q5_1_1" rows="3" required></textarea>
-        <label>5.2.1 People readiness</label>
-        <textarea name="q5_2_1" rows="3" required></textarea>
-        <label>5.3.1 Procurement capability</label>
-        <textarea name="q5_3_1" rows="3" required></textarea>
+
+        <label for="ic_5_1_1">5.1.1 Does FO have required staff capacity for the opportunity? *</label>
+        <select id="ic_5_1_1" name="Implementation_5.1.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="ic_5_1_1_comment">Explanation:</label>
+        <textarea id="ic_5_1_1_comment" name="Implementation_5.1.1_comment" rows="3"></textarea>
+
+        <label for="ic_5_2_1">5.2.1 Does FO have sufficient security and operational environment? *</label>
+        <select id="ic_5_2_1" name="Implementation_5.2.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="ic_5_2_1_comment">Explanation:</label>
+        <textarea id="ic_5_2_1_comment" name="Implementation_5.2.1_comment" rows="3"></textarea>
       </div>
 
-      <div class="section">
+      <!-- 6. Financial -->
+      <div class="section" id="financialSection">
         <h2>6. Financial</h2>
-        <label>6.1.1 Cost allocation approach</label>
-        <textarea name="q6_1_1" rows="3" required></textarea>
-        <label>6.2.1 Donor match available?</label>
-        <textarea name="q6_2_1" rows="3" required></textarea>
-        <label>6.4.1 Cash flow concerns</label>
-        <textarea name="q6_4_1" rows="3" required></textarea>
+
+        <label for="f_6_1_1">6.1.1 Can FO cover donor-required matching funds? *</label>
+        <select id="f_6_1_1" name="Financial_6.1.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="f_6_1_1_comment">Explanation:</label>
+        <textarea id="f_6_1_1_comment" name="Financial_6.1.1_comment" rows="3"></textarea>
+
+        <label for="f_6_2_1">6.2.1 Does FO have capacity to manage finances and pre-finance? *</label>
+        <select id="f_6_2_1" name="Financial_6.2.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="f_6_2_1_comment">Explanation:</label>
+        <textarea id="f_6_2_1_comment" name="Financial_6.2.1_comment" rows="3"></textarea>
+
+        <!-- Contract-specific financial selection methods -->
+        <div id="contractFinancialMethods" style="display:none;">
+          <label for="contract_selection_method">Contract Selection Method</label>
+          <select id="contract_selection_method" name="contract_selection_method">
+            <option value="">Select...</option>
+            <option value="QCBS">Quality Cost Based Selection (QCBS)</option>
+            <option value="FBS">Fixed Budget Based Selection (FBS)</option>
+            <option value="LCS">Least Cost Based Selection (LCS)</option>
+            <option value="QBS">Quality Based Selection (QBS)</option>
+            <option value="CQS">Consultant's Qualifications Based Selection (CQS)</option>
+            <option value="Direct Selection">Direct Selection</option>
+          </select>
+          <label for="contract_selection_method_comment">Explanation:</label>
+          <textarea id="contract_selection_method_comment" name="contract_selection_method_comment" rows="3"></textarea>
+        </div>
       </div>
 
+      <!-- 7. Implementation Risk -->
       <div class="section">
         <h2>7. Implementation Risk</h2>
-        <label>7.1.1 Safety & security risks</label>
-        <textarea name="q7_1_1" rows="3" required></textarea>
-        <label>7.2.1 Political risks</label>
-        <textarea name="q7_2_1" rows="3" required></textarea>
-        <label>7.3.1 Can we measure impact?</label>
-        <textarea name="q7_3_1" rows="3" required></textarea>
+
+        <label for="ir_7_1_1">7.1.1 What is the security risk level? *</label>
+        <select id="ir_7_1_1" name="Risk_7.1.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="ir_7_1_1_comment">Explanation:</label>
+        <textarea id="ir_7_1_1_comment" name="Risk_7.1.1_comment" rows="3"></textarea>
+
+        <label for="ir_7_2_1">7.2.1 Political risk assessment *</label>
+        <select id="ir_7_2_1" name="Risk_7.2.1" required>
+          <option value="">Select...</option>
+          <option value="Strength">Strength</option>
+          <option value="Neutral">Neutral</option>
+          <option value="Weakness">Weakness</option>
+          <option value="Must address">Must address</option>
+          <option value="Success not possible">Success not possible</option>
+          <option value="Don't know">Don't know</option>
+        </select>
+        <label for="ir_7_2_1_comment">Explanation:</label>
+        <textarea id="ir_7_2_1_comment" name="Risk_7.2.1_comment" rows="3"></textarea>
       </div>
 
-      <button type="submit">Save & Download Response</button>
+      <div class="form-actions">
+        <button type="submit">Download Responses</button>
+        <button type="reset">Reset Form</button>
+      </div>
     </form>
   </div>
+
+  <script src="form-handler.js"></script>
+  <script>
+    // Show/hide contract-specific fields based on opportunity type
+    const opportunityRadios = document.querySelectorAll('input[name="opportunityType"]');
+    const contractFinancialDiv = document.getElementById('contractFinancialMethods');
+    const contractTextElements = document.querySelectorAll('.contract-text');
+    const grantTextElements = document.querySelectorAll('.grant-text');
+
+    function toggleOpportunitySections() {
+      const selected = document.querySelector('input[name="opportunityType"]:checked').value;
+      if (selected === "Contract") {
+        contractFinancialDiv.style.display = 'block';
+        contractTextElements.forEach(el => el.style.display = 'block');
+        grantTextElements.forEach(el => el.style.display = 'none');
+      } else {
+        contractFinancialDiv.style.display = 'none';
+        contractTextElements.forEach(el => el.style.display = 'none');
+        grantTextElements.forEach(el => el.style.display = 'block');
+      }
+    }
+
+    opportunityRadios.forEach(radio => {
+      radio.addEventListener('change', toggleOpportunitySections);
+    });
+
+    // Initialize visibility on page load
+    window.addEventListener('DOMContentLoaded', toggleOpportunitySections);
+  </script>
 </body>
 </html>
