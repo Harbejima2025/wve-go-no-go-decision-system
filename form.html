@@ -448,5 +448,14 @@
     // Initialize visibility on page load
     window.addEventListener('DOMContentLoaded', toggleOpportunitySections);
   </script>
+  <div id="summaryPanel" style="margin-top: 20px; border: 1px solid #ccc; padding: 15px; border-radius: 6px;">
+  <h3>Summary of Ratings</h3>
+  <div id="summaryCounts"></div>
+  <div style="margin-top:10px;">
+    <label for="strengthProgress">Strength Percentage:</label>
+    <progress id="strengthProgress" max="100" value="0" style="width: 100%; height: 20px;"></progress>
+  </div>
+</div>
+
 </body>
 </html>
